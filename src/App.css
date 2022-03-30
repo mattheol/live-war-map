@@ -13,3 +13,17 @@ body {
   margin: 0;
   /* background-color: hsl(49, 100%, 58%); */
 }
+.app-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+
+.map-container {
+  flex: 1;
+  height: 100%;
+}
+
+.right-panel {
+  width: 300px;
+}
