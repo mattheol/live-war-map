@@ -7,7 +7,7 @@ const MapElement = () => {
   const divElement = useRef<any>(undefined);
   useEffect(() => {
     const newMap = L.map(divElement.current, {
-      center: [49, 32],
+      center: [49, 31],
       zoom: 6,
     });
     setMap(newMap);

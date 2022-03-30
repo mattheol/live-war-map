@@ -13,10 +13,11 @@ function App() {
         <button
           onClick={async () => {
             const params = new URLSearchParams({
-              q: "'war'",
+              q: "(#Ukraine OR #war) -filter:retweets",
               count: "100",
               result_type: "recent",
-              geocode: "49,32,500km",
+              geocode: "49,31,700km",
+              lang: "en",
             });
             const res = await fetch(
               `http://localhost:8000/https://api.twitter.com/1.1/search/tweets.json?${params.toString()}`,
@@ -27,11 +28,7 @@ function App() {
               }
             ).then((r) => r.json());
             const filtered = res.statuses.filter((st: any) => st.geo);
-            console.log(
-              res.statuses.map((st: any) =>
-                st.geo ? st.geo : st.user.location
-              )
-            );
+            console.log(filtered);
           }}
         >
           Fetch tweets
