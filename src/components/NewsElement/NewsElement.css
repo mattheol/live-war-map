@@ -1,0 +1,17 @@
+.news-element-container {
+  padding: 10px 15px;
+  border-bottom: 1px solid #ececec;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+}
+
+.news-element-container:hover {
+  background-color: #f3f3f3;
+}
+
+.news-element-date {
+  color: #999;
+  font-weight: 700;
+}

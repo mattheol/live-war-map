@@ -1,11 +1,21 @@
-import React from "react";
+import React, { useState } from "react";
+import { Tweet } from "./@types/interfaces";
 import "./App.css";
 import MapElement from "./components/MapElement/MapElement";
+import NewsList from "./components/NewsList/NewsList";
+import TweetDialog from "./components/TweetDialog/TweetDialog";
 import { config as TwitterConfig } from "./config/twitterConfig";
 
 function App() {
+  const [activeTweet, setActiveTweet] = useState<Tweet | undefined>(undefined);
   return (
     <div className="app-container">
+      <TweetDialog
+        tweet={activeTweet}
+        onClosed={() => {
+          setActiveTweet(undefined);
+        }}
+      />
       <div className="map-container">
         <MapElement />
       </div>
@@ -27,12 +37,17 @@ function App() {
                 },
               }
             ).then((r) => r.json());
-            const filtered = res.statuses.filter((st: any) => st.geo);
-            console.log(filtered);
+            const tweetsWithGeo = res.statuses.filter((st: any) => st.geo);
+            console.log({ tweetsWithGeo });
           }}
         >
           Fetch tweets
         </button>
+        <NewsList
+          onTweetClick={(tweet: Tweet) => {
+            setActiveTweet(tweet);
+          }}
+        />
       </div>
     </div>
   );
