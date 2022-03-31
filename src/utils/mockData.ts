@@ -8,6 +8,15 @@ export const sampleTweetsWithGeo: Array<Tweet> = [
     created_at: 1509522058434162700,
     text: "In #Lysychansk , the occupiers fired at an oil storage facility, in #Severodonetsk - a school\n#war #ukraine… https://t.co/ehp2nz4Dct",
     source: "twitter",
+    category: "explosion",
+  },
+  {
+    created_at: 1648748187000,
+    _tweetId: "1509585426293657606",
+    geo: [50.45466, 30.5238],
+    text: "Kyiv(20:35). Red Alert: aerial threat. Sirens sounding. Take cover now! https://t.co/hmYbLBtJ8p  #Ukraine",
+    uuid: "1509585426293657606",
+    category: "aerial",
   },
 ];
 

@@ -10,4 +10,7 @@ export interface Tweet {
   media?: Array<{ type: "video" | "image"; content_type: string }>;
   _tweetId?: string;
   geo?: [number, number];
+  category?: TweetCategory;
 }
+
+export type TweetCategory = "aerial" | "explosion";
