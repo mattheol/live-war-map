@@ -9,4 +9,5 @@ export interface Tweet {
   text: string;
   media?: Array<{ type: "video" | "image"; content_type: string }>;
   _tweetId?: string;
+  geo?: [number, number];
 }

@@ -17,13 +17,17 @@ function App() {
         }}
       />
       <div className="map-container">
-        <MapElement />
+        <MapElement
+          onTweetClick={(tweet: Tweet) => {
+            setActiveTweet(tweet);
+          }}
+        />
       </div>
       <div className="right-panel">
-        <button
+        {/* <button
           onClick={async () => {
             const params = new URLSearchParams({
-              q: "(#Ukraine OR #war) -filter:retweets",
+              q: '(#Ukraine OR #war OR "war") -filter:retweets',
               count: "100",
               result_type: "recent",
               geocode: "49,31,700km",
@@ -42,7 +46,7 @@ function App() {
           }}
         >
           Fetch tweets
-        </button>
+        </button> */}
         <NewsList
           onTweetClick={(tweet: Tweet) => {
             setActiveTweet(tweet);

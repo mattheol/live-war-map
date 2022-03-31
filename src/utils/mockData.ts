@@ -1,3 +1,16 @@
+import { Tweet } from "../@types/interfaces";
+
+export const sampleTweetsWithGeo: Array<Tweet> = [
+  {
+    _tweetId: "1509520889477582854",
+    geo: [48.90408, 38.42881],
+    uuid: "1509520889477582854",
+    created_at: 1509522058434162700,
+    text: "In #Lysychansk , the occupiers fired at an oil storage facility, in #Severodonetsk - a school\n#war #ukraine… https://t.co/ehp2nz4Dct",
+    source: "twitter",
+  },
+];
+
 export const sampleTweets = [
   {
     created_at: "Thu Mar 31 13:24:38 +0000 2022",
