@@ -1,12 +1,24 @@
 import { TweetCategory } from "../@types/interfaces";
-import { aerialIcon, explosionIcon } from "../icons/icons";
+import {
+  aerialIcon,
+  bombIcon,
+  explosionIcon,
+  killIcon,
+  liberationIcon,
+  shootingIcon,
+  warningIcon,
+} from "../icons/icons";
 
-export function getIconForCategory(category?: TweetCategory) {
-  switch (category) {
-    case "explosion":
-      return explosionIcon;
-    case "aerial":
-    default:
-      return aerialIcon;
-  }
+const categoryToIconMapping: Record<TweetCategory, string> = {
+  aerial: aerialIcon,
+  bomb: bombIcon,
+  explosion: explosionIcon,
+  warning: warningIcon,
+  shooting: shootingIcon,
+  liberation: liberationIcon,
+  kill: killIcon,
+};
+export function getIconForCategory(category: TweetCategory) {
+  if (!category) return warningIcon;
+  return categoryToIconMapping[category];
 }

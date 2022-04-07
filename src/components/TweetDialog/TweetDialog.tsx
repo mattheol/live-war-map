@@ -56,7 +56,7 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
           marginTop: "15px",
         }}
       >
-        {tweet?._tweetId && <TwitterTweetEmbed tweetId={tweet._tweetId} />}
+        {tweet?.id && <TwitterTweetEmbed tweetId={tweet.id} />}
       </DialogContent>
     </Dialog>
   );

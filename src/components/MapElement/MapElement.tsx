@@ -1,15 +1,16 @@
 import L from "leaflet";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Tweet } from "../../@types/interfaces";
+import { createTweetsProvider } from "../../providers/TweetsProviderFactory";
 import { getIconForCategory } from "../../utils/helpers";
-import { sampleTweetsWithGeo } from "../../utils/mockData";
 import "./MapElement.css";
 
 export interface MapElementProps {
+  tweets: Array<Tweet>;
   onTweetClick: (tweet: Tweet) => void;
 }
 
-const MapElement = ({ onTweetClick }: MapElementProps) => {
+const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
   const [map, setMap] = useState<L.Map | undefined>(undefined);
   const divElement = useRef<any>(undefined);
   useEffect(() => {
@@ -18,7 +19,6 @@ const MapElement = ({ onTweetClick }: MapElementProps) => {
       zoom: 6,
     });
     setMap(newMap);
-
     const tiles = new L.TileLayer(
       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
       {
@@ -27,27 +27,44 @@ const MapElement = ({ onTweetClick }: MapElementProps) => {
       }
     );
     tiles.addTo(newMap);
-
-    const drawTweetsWithGeo = () => {
-      sampleTweetsWithGeo.forEach((tweet) => {
-        const customIcon = L.icon({
-          iconUrl: getIconForCategory(tweet.category),
-          iconSize: [38, 95],
-        });
-
-        const p = L.marker([tweet.geo![0], tweet.geo![1]], {
-          icon: customIcon,
-        });
-        p.addTo(newMap);
-        p.on("click", () => {
-          onTweetClick(tweet);
-        });
-      });
-    };
-
-    drawTweetsWithGeo();
   }, []);
-  console.log({ map });
+
+  useEffect(() => {
+    if (!map) return;
+    const drawTweetsWithGeo = () => {
+      const processedTweets: Tweet[] = [];
+      tweets
+        .filter((tweet) => tweet.category)
+        .forEach((tweet) => {
+          const customIcon = L.icon({
+            iconUrl: getIconForCategory(tweet.category),
+            iconSize: [38, 95],
+          });
+          if (
+            processedTweets.find(
+              (t) => t.lat === tweet.lat && t.lng === tweet.lng
+            )
+          ) {
+            const up = Math.random() > 0.5;
+            const right = Math.random() > 0.5;
+            const latOffset = Math.random() / 20;
+            const lngOffset = Math.random() / 20;
+            tweet.lat = tweet.lat + (up ? +latOffset : -latOffset);
+            tweet.lng = tweet.lng + (right ? +lngOffset : -lngOffset);
+          }
+          const p = L.marker([tweet.lat, tweet.lng], {
+            icon: customIcon,
+          });
+          p.addTo(map);
+          p.on("click", () => {
+            onTweetClick(tweet);
+          });
+          processedTweets.push(tweet);
+        });
+    };
+    drawTweetsWithGeo();
+  }, [map, tweets]);
+
   return <div className="map-element-container" ref={divElement}></div>;
 };
 

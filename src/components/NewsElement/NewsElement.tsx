@@ -8,15 +8,11 @@ export interface NewsElementProps {
 }
 
 const NewsElement = ({ tweet, onTweetClick }: NewsElementProps) => {
-  const { text, created_at } = tweet;
+  const { text, date } = tweet;
   return (
     <div className="news-element-container" onClick={() => onTweetClick(tweet)}>
       <div className="news-element-date">
-        {new Date(created_at)
-          .toLocaleTimeString()
-          .split(":")
-          .slice(0, 2)
-          .join(":")}
+        {new Date(date).toLocaleTimeString().split(":").slice(0, 2).join(":")}
       </div>
       <div>{text}</div>
     </div>

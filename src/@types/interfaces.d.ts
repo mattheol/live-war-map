@@ -1,16 +1,23 @@
-export interface NewsProvider {
-  getNews(params: { limit?: number; lastId?: number });
+export interface TweetsProvider {
+  getTweets(params: { date: number }): Promise<Array<Tweet>>;
 }
 
 export interface Tweet {
-  uuid: string;
-  created_at: number;
-  source?: "twitter";
+  id: string;
+  city: string;
+  date: string;
   text: string;
-  media?: Array<{ type: "video" | "image"; content_type: string }>;
-  _tweetId?: string;
-  geo?: [number, number];
-  category?: TweetCategory;
+  category: TweetCategory;
+  lat: number;
+  lng: number;
+  source?: "twitter" | "app"; //default twitter
 }
 
-export type TweetCategory = "aerial" | "explosion";
+export type TweetCategory =
+  | "aerial"
+  | "explosion"
+  | "shooting"
+  | "bomb"
+  | "liberation"
+  | "kill"
+  | "warning";

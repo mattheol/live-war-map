@@ -1,13 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Tweet } from "./@types/interfaces";
 import "./App.css";
 import MapElement from "./components/MapElement/MapElement";
 import NewsList from "./components/NewsList/NewsList";
 import TweetDialog from "./components/TweetDialog/TweetDialog";
-import { config as TwitterConfig } from "./config/twitterConfig";
+import { createTweetsProvider } from "./providers/TweetsProviderFactory";
 
 function App() {
+  const [tweets, setTweets] = useState<Tweet[]>([]);
   const [activeTweet, setActiveTweet] = useState<Tweet | undefined>(undefined);
+  const [dateFilter, setDateFilter] = useState<number>(Date.now());
+  const provider = useMemo(createTweetsProvider, []);
+
+  useEffect(() => {
+    let cancel = false;
+    const fetchNews = async () => {
+      const tweets: Tweet[] = await provider.getTweets({ date: dateFilter });
+      if (cancel) return;
+      setTweets(tweets);
+    };
+    fetchNews();
+    return () => {
+      cancel = true;
+    };
+  }, [dateFilter]);
+
   return (
     <div className="app-container">
       <TweetDialog
@@ -18,36 +35,15 @@ function App() {
       />
       <div className="map-container">
         <MapElement
+          tweets={tweets}
           onTweetClick={(tweet: Tweet) => {
             setActiveTweet(tweet);
           }}
         />
       </div>
       <div className="right-panel">
-        {/* <button
-          onClick={async () => {
-            const params = new URLSearchParams({
-              q: '(#Ukraine OR #war OR "war") -filter:retweets',
-              count: "100",
-              result_type: "recent",
-              geocode: "49,31,700km",
-              lang: "en",
-            });
-            const res = await fetch(
-              `http://localhost:8000/https://api.twitter.com/1.1/search/tweets.json?${params.toString()}`,
-              {
-                headers: {
-                  Authorization: `Bearer ${TwitterConfig.token}`,
-                },
-              }
-            ).then((r) => r.json());
-            const tweetsWithGeo = res.statuses.filter((st: any) => st.geo);
-            console.log({ tweetsWithGeo });
-          }}
-        >
-          Fetch tweets
-        </button> */}
         <NewsList
+          tweets={tweets}
           onTweetClick={(tweet: Tweet) => {
             setActiveTweet(tweet);
           }}
