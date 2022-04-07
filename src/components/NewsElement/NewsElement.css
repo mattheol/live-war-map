@@ -15,3 +15,10 @@
   color: #999;
   font-weight: 700;
 }
+
+.news-element-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  align-items: center;
+}

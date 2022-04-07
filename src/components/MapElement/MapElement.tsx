@@ -1,6 +1,7 @@
 import L from "leaflet";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Tweet } from "../../@types/interfaces";
+import { mapProvider } from "../../providers/MapProvider";
 import { createTweetsProvider } from "../../providers/TweetsProviderFactory";
 import { getIconForCategory } from "../../utils/helpers";
 import "./MapElement.css";
@@ -18,6 +19,7 @@ const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
       center: [49, 31],
       zoom: 6,
     });
+    mapProvider.registerMap(newMap);
     setMap(newMap);
     const tiles = new L.TileLayer(
       "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
