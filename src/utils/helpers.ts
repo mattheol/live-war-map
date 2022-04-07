@@ -30,8 +30,8 @@ export function getIconForCategory(category: TweetCategory) {
 };
 
 function getDates(startDate: any, stopDate: any) {
-  var dateArray = new Array();
-  var currentDate = startDate;
+  let dateArray = new Array();
+  let currentDate = startDate;
   while (currentDate <= stopDate) {
     dateArray.push(new Date(currentDate));
     currentDate = currentDate.addDays(1);
@@ -39,13 +39,12 @@ function getDates(startDate: any, stopDate: any) {
   return dateArray;
 }
 
-const startDate = 1649264139000;
+const startDate = 1649293037000;
 
 export const getDateList = (): Array<{ value: number; alias: string }> => {
-  const dates = getDates(
-    new Date(startDate),
-    new Date()
-  ).reverse() as Array<Date>;
+  const sDate = new Date(startDate);
+  sDate.setHours(0, 0, 0, 0);
+  const dates = getDates(sDate, new Date()).reverse() as Array<Date>;
   dates.forEach((d) => {
     d.setHours(12, 0, 0, 0);
   });

@@ -13,6 +13,7 @@ export interface MapElementProps {
 
 const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
   const [map, setMap] = useState<L.Map | undefined>(undefined);
+
   const divElement = useRef<any>(undefined);
   useEffect(() => {
     const newMap = L.map(divElement.current, {
@@ -35,6 +36,14 @@ const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
     if (!map) return;
     const drawTweetsWithGeo = () => {
       const processedTweets: Tweet[] = [];
+      map.eachLayer((layer: any) => {
+        if (
+          !(layer instanceof L.TileLayer) &&
+          layer.options.myCustomProperty != "myMainMarker"
+        ) {
+          map.removeLayer(layer);
+        }
+      });
       tweets
         .filter((tweet) => tweet.category)
         .forEach((tweet) => {

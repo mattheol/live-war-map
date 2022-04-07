@@ -13,13 +13,21 @@ function App() {
   const [dateFilter, setDateFilter] = useState<number>(() => {
     const today = new Date();
     today.setHours(12, 0, 0, 0);
+    console.log(today.toLocaleDateString());
     return today.getTime();
   });
   const provider = useMemo(createTweetsProvider, []);
   useEffect(() => {
     let cancel = false;
     const fetchNews = async () => {
-      const tweets: Tweet[] = await provider.getTweets({ date: dateFilter });
+      const startDate = new Date(dateFilter);
+      startDate.setHours(0, 0, 0, 0);
+      const endDate = new Date(dateFilter);
+      endDate.setHours(23, 59, 59, 59);
+      const tweets: Tweet[] = await provider.getTweets({
+        start_date: startDate.getTime(),
+        end_date: endDate.getTime(),
+      });
       if (cancel) return;
       setTweets(tweets);
     };

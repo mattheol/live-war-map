@@ -1,5 +1,8 @@
 export interface TweetsProvider {
-  getTweets(params: { date: number }): Promise<Array<Tweet>>;
+  getTweets(params: {
+    start_date: number;
+    end_date: number;
+  }): Promise<Array<Tweet>>;
 }
 
 export interface Tweet {
