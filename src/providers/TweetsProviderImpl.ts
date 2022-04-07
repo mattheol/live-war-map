@@ -9,9 +9,9 @@ export class TweetsProviderImpl implements TweetsProvider {
 
   async getTweets(params: { date: number }) {
     console.log({ params });
-    const tweets: Array<Tweet> = await fetch(`${this.url}/tweets`).then((r) =>
-      r.json()
-    );
+    const tweets: Array<Tweet> = await fetch(
+      `${this.url}/tweets?date=${params.date}`
+    ).then((r) => r.json());
     return tweets.reverse();
   }
 }
