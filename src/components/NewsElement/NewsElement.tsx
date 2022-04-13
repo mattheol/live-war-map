@@ -4,6 +4,7 @@ import { Tweet } from "../../@types/interfaces";
 import Button from "@mui/material/Button";
 import { mapProvider } from "../../providers/MapProvider";
 import { LatLngLiteral } from "leaflet";
+import { getIconForCategory } from "../../utils/helpers";
 
 export interface NewsElementProps {
   tweet: Tweet;
@@ -15,8 +16,26 @@ const NewsElement = ({ tweet, onTweetClick }: NewsElementProps) => {
   return (
     <div className="news-element-container" onClick={() => onTweetClick(tweet)}>
       <div className="news-element-header">
-        <div className="news-element-date">
-          {new Date(date).toLocaleTimeString().split(":").slice(0, 2).join(":")}
+        <div className="news-element-header-left">
+          <div className="news-element-date">
+            {new Date(date)
+              .toLocaleTimeString()
+              .split(":")
+              .slice(0, 2)
+              .join(":")}
+          </div>
+          <div>
+            {[
+              tweet.mainCategory,
+              ...tweet.categories.filter((c) => c !== tweet.mainCategory),
+            ].map((category) => (
+              <img
+                height="35px"
+                width="35px"
+                src={getIconForCategory(category)}
+              ></img>
+            ))}
+          </div>
         </div>
         <Button
           variant="text"

@@ -10,7 +10,8 @@ export interface Tweet {
   city: string;
   date: string;
   text: string;
-  category: TweetCategory;
+  categories: Array<TweetCategory>;
+  mainCategory: TweetCategory;
   lat: number;
   lng: number;
   source?: "twitter" | "app"; //default twitter
@@ -20,7 +21,16 @@ export type TweetCategory =
   | "aerial"
   | "explosion"
   | "shooting"
-  | "bomb"
+  | "bombing"
   | "liberation"
   | "kill"
-  | "warning";
+  | "warning"
+  | "civilian"
+  | "vehicle"
+  | "arrest"
+  | "drone"
+  | "mines"
+  | "chemical"
+  | "politics"
+  | "governments"
+  | "buildings";

@@ -1,23 +1,41 @@
 import { TweetCategory } from "../@types/interfaces";
 import {
   aerialIcon,
-  bombIcon,
+  bombingIcon,
   explosionIcon,
   killIcon,
   liberationIcon,
   shootingIcon,
   warningIcon,
+  civilianIcon,
+  vehicleIcon,
+  arrestIcon,
+  minesIcon,
+  droneIcon,
+  chemicalIcon,
+  politicsIcon,
+  buildingsIcon,
 } from "../icons/icons";
 
 const categoryToIconMapping: Record<TweetCategory, string> = {
   aerial: aerialIcon,
-  bomb: bombIcon,
+  bombing: bombingIcon,
   explosion: explosionIcon,
   warning: warningIcon,
   shooting: shootingIcon,
   liberation: liberationIcon,
   kill: killIcon,
+  civilian: civilianIcon,
+  vehicle: vehicleIcon,
+  arrest: arrestIcon,
+  drone: droneIcon,
+  mines: minesIcon,
+  chemical: chemicalIcon,
+  politics: politicsIcon,
+  governments: politicsIcon, //duplicate
+  buildings: buildingsIcon,
 };
+
 export function getIconForCategory(category: TweetCategory) {
   if (!category) return warningIcon;
   return categoryToIconMapping[category];
@@ -39,7 +57,7 @@ function getDates(startDate: any, stopDate: any) {
   return dateArray;
 }
 
-const startDate = 1649293037000;
+const startDate = 1649455201000;
 
 export const getDateList = (): Array<{ value: number; alias: string }> => {
   const sDate = new Date(startDate);

@@ -5,7 +5,6 @@ import MapElement from "./components/MapElement/MapElement";
 import NewsList from "./components/NewsList/NewsList";
 import TweetDialog from "./components/TweetDialog/TweetDialog";
 import { createTweetsProvider } from "./providers/TweetsProviderFactory";
-import { getDateList } from "./utils/helpers";
 
 function App() {
   const [tweets, setTweets] = useState<Tweet[]>([]);
@@ -13,7 +12,6 @@ function App() {
   const [dateFilter, setDateFilter] = useState<number>(() => {
     const today = new Date();
     today.setHours(12, 0, 0, 0);
-    console.log(today.toLocaleDateString());
     return today.getTime();
   });
   const provider = useMemo(createTweetsProvider, []);

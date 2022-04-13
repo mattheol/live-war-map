@@ -22,3 +22,9 @@
   width: 100%;
   align-items: center;
 }
+
+.news-element-header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
