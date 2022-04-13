@@ -15,6 +15,6 @@ export class TweetsProviderImpl implements TweetsProvider {
     const tweets: Array<Tweet> = await fetch(
       `${this.url}/tweets?start_date=${params.start_date}&end_date=${params.end_date}`
     ).then((r) => r.json());
-    return tweets.reverse();
+    return tweets.reverse().filter((t) => t.categories && t.mainCategory);
   }
 }

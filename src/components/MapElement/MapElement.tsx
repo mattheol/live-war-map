@@ -47,6 +47,8 @@ const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
       tweets
         .filter((tweet) => tweet.mainCategory)
         .forEach((tweet) => {
+          const iconUrl = getIconForCategory(tweet.mainCategory);
+          console.log(tweet.mainCategory, iconUrl);
           const customIcon = L.icon({
             iconUrl: getIconForCategory(tweet.mainCategory),
             iconSize: [38, 95],
