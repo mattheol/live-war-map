@@ -8,6 +8,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { makeStyles } from "@mui/styles";
+import { getIconForCategory } from "../../utils/helpers";
 
 export interface TweetDialogProps {
   tweet?: Tweet;
@@ -56,6 +57,20 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
           marginTop: "15px",
         }}
       >
+        {tweet?.categories && (
+          <div>
+            {[
+              tweet.mainCategory,
+              ...tweet.categories.filter((c) => c !== tweet.mainCategory),
+            ].map((category) => (
+              <img
+                height="35px"
+                width="35px"
+                src={getIconForCategory(category)}
+              ></img>
+            ))}
+          </div>
+        )}
         {tweet?.id && <TwitterTweetEmbed tweetId={tweet.id} />}
       </DialogContent>
     </Dialog>

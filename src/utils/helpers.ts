@@ -44,7 +44,7 @@ const categoryToTextMapping: Record<TweetCategory, string> = {
   shooting: "Shooting",
   liberation: "Liberation",
   kill: "Kill",
-  civilian: "Civilian",
+  civilian: "Civilians",
   vehicle: "Vehicle",
   arrest: "Arrest",
   drone: "Drone",

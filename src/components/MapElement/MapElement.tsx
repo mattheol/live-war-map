@@ -2,9 +2,10 @@ import L from "leaflet";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Tweet } from "../../@types/interfaces";
 import { mapProvider } from "../../providers/MapProvider";
-import { createTweetsProvider } from "../../providers/TweetsProviderFactory";
 import { getIconForCategory, getTextForCategory } from "../../utils/helpers";
 import "./MapElement.css";
+import { useAuthState } from "react-firebase-hooks/auth";
+import { auth } from "../../providers/FirebaseProvider";
 
 export interface MapElementProps {
   tweets: Array<Tweet>;
@@ -13,7 +14,9 @@ export interface MapElementProps {
 
 const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
   const [map, setMap] = useState<L.Map | undefined>(undefined);
-  const controlRef = useRef<L.Control | undefined>(undefined);
+  const [user, loading, error] = useAuthState(auth);
+  const legendControlRef = useRef<L.Control | undefined>(undefined);
+  const buttonAddRef = useRef<L.Control | undefined>(undefined);
   const divElement = useRef<any>(undefined);
   useEffect(() => {
     const newMap = L.map(divElement.current, {
@@ -75,8 +78,8 @@ const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
           processedTweets.push(tweet);
         });
       const legend = new L.Control({ position: "bottomleft" });
-      if (controlRef.current) {
-        map.removeControl(controlRef.current);
+      if (legendControlRef.current) {
+        map.removeControl(legendControlRef.current);
       }
       legend.onAdd = (map: L.Map) => {
         const legendDiv = L.DomUtil.create("div", "legend-container");
@@ -98,10 +101,32 @@ const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
         return legendDiv;
       };
       legend.addTo(map);
-      controlRef.current = legend;
+      legendControlRef.current = legend;
     };
     drawTweetsWithGeo();
   }, [map, tweets]);
+
+  useEffect(() => {
+    if (map) {
+      if (buttonAddRef.current) {
+        map.removeControl(buttonAddRef.current);
+      }
+      if (user) {
+        const buttonAdd = new L.Control({ position: "topright" });
+        buttonAdd.onAdd = (map: L.Map) => {
+          const buttonElem = L.DomUtil.create("button", "legend-container");
+          buttonElem.innerHTML = `Add a news`;
+          buttonElem.addEventListener("click", () => {
+            //TODO handle
+            console.log("click add button");
+          });
+          return buttonElem;
+        };
+        buttonAdd.addTo(map);
+        buttonAddRef.current = buttonAdd;
+      }
+    }
+  }, [map, user]);
 
   return <div className="map-element-container" ref={divElement}></div>;
 };

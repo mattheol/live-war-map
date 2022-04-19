@@ -30,6 +30,7 @@ const NewsElement = ({ tweet, onTweetClick }: NewsElementProps) => {
               ...tweet.categories.filter((c) => c !== tweet.mainCategory),
             ].map((category) => (
               <img
+                key={category}
                 height="35px"
                 width="35px"
                 src={getIconForCategory(category)}

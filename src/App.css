@@ -29,3 +29,8 @@ body {
   height: 100%;
   overflow: auto;
 }
+
+.user-panel {
+  display: flex;
+  justify-content: flex-end;
+}
