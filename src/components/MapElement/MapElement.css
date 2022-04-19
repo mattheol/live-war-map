@@ -4,3 +4,15 @@
   height: 100%;
   width: 100%;
 }
+
+.legend-container {
+  padding: 6px 8px;
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.legend-item {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  font-size: 18px;
+}

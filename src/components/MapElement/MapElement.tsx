@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Tweet } from "../../@types/interfaces";
 import { mapProvider } from "../../providers/MapProvider";
 import { createTweetsProvider } from "../../providers/TweetsProviderFactory";
-import { getIconForCategory } from "../../utils/helpers";
+import { getIconForCategory, getTextForCategory } from "../../utils/helpers";
 import "./MapElement.css";
 
 export interface MapElementProps {
@@ -13,7 +13,7 @@ export interface MapElementProps {
 
 const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
   const [map, setMap] = useState<L.Map | undefined>(undefined);
-
+  const controlRef = useRef<L.Control | undefined>(undefined);
   const divElement = useRef<any>(undefined);
   useEffect(() => {
     const newMap = L.map(divElement.current, {
@@ -47,8 +47,8 @@ const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
       tweets
         .filter((tweet) => tweet.mainCategory)
         .forEach((tweet) => {
-          const iconUrl = getIconForCategory(tweet.mainCategory);
-          console.log(tweet.mainCategory, iconUrl);
+          // const iconUrl = getIconForCategory(tweet.mainCategory);
+          // console.log(tweet.mainCategory, iconUrl);
           const customIcon = L.icon({
             iconUrl: getIconForCategory(tweet.mainCategory),
             iconSize: [38, 95],
@@ -74,6 +74,31 @@ const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
           });
           processedTweets.push(tweet);
         });
+      const legend = new L.Control({ position: "bottomleft" });
+      if (controlRef.current) {
+        map.removeControl(controlRef.current);
+      }
+      legend.onAdd = (map: L.Map) => {
+        const legendDiv = L.DomUtil.create("div", "legend-container");
+        const uniqueCategories = Array.from(
+          new Set(
+            tweets
+              .map((t) => t.categories)
+              .flat()
+              .sort()
+          )
+        );
+        legendDiv.innerHTML = `${uniqueCategories
+          .map((cat) => {
+            const icon = getIconForCategory(cat);
+            const text = getTextForCategory(cat);
+            return `<div class="legend-item"><img class="legend-icon" src=${icon} height="25" width="25"></img><span class="legend-text">${text}</span></div>`;
+          })
+          .join("")}`;
+        return legendDiv;
+      };
+      legend.addTo(map);
+      controlRef.current = legend;
     };
     drawTweetsWithGeo();
   }, [map, tweets]);

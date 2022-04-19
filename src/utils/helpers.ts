@@ -36,9 +36,33 @@ const categoryToIconMapping: Record<TweetCategory, string> = {
   buildings: buildingsIcon,
 };
 
+const categoryToTextMapping: Record<TweetCategory, string> = {
+  aerial: "Aerial",
+  bombing: "Bombing",
+  explosion: "Explosion",
+  warning: "Warning",
+  shooting: "Shooting",
+  liberation: "Liberation",
+  kill: "Kill",
+  civilian: "Civilian",
+  vehicle: "Vehicle",
+  arrest: "Arrest",
+  drone: "Drone",
+  mines: "Mines",
+  chemical: "Chemical",
+  politics: "Politics",
+  governments: "Politics", //duplicate
+  buildings: "Buildings",
+};
+
 export function getIconForCategory(category: TweetCategory) {
   if (!category) return warningIcon;
   return categoryToIconMapping[category];
+}
+
+export function getTextForCategory(category: TweetCategory) {
+  if (!category) return "Warning";
+  return categoryToTextMapping[category];
 }
 
 (Date as any).prototype.addDays = function (days: any) {
