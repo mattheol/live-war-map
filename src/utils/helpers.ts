@@ -92,6 +92,6 @@ export const getDateList = (): Array<{ value: number; alias: string }> => {
   });
   return dates.map((d, i) => ({
     value: d.getTime(),
-    alias: i === 0 ? "Dzisiaj" : d.toLocaleDateString(),
+    alias: i === 0 ? "Today" : d.toLocaleDateString(),
   }));
 };

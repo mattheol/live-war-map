@@ -25,10 +25,10 @@ const NewsList = ({
   return (
     <>
       <div className="news-list-header">
-        <h4>Wydarzenia</h4>
+        <h4>News</h4>
         <Box sx={{ width: 150 }}>
           <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">Data</InputLabel>
+            <InputLabel id="demo-simple-select-label">Date</InputLabel>
             <Select
               labelId="demo-simple-select-label"
               id="demo-simple-select"
