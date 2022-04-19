@@ -81,7 +81,7 @@ function getDates(startDate: any, stopDate: any) {
   return dateArray;
 }
 
-const startDate = 1649455201000;
+const startDate = 1650218142000;
 
 export const getDateList = (): Array<{ value: number; alias: string }> => {
   const sDate = new Date(startDate);
