@@ -64,6 +64,7 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
               ...tweet.categories.filter((c) => c !== tweet.mainCategory),
             ].map((category) => (
               <img
+                key={category + "_dial"}
                 height="35px"
                 width="35px"
                 src={getIconForCategory(category)}
