@@ -48,18 +48,13 @@ function App() {
     };
   }, [dateFilter]);
 
-  if (loading || tweetsLoading) {
-    return (
-      <div className="app-container">
+  return (
+    <div className="app-container">
+      {(loading || tweetsLoading) && (
         <Backdrop open={loading || tweetsLoading} sx={{ zIndex: 9999 }}>
           <CircularProgress />
         </Backdrop>
-      </div>
-    );
-  }
-
-  return (
-    <div className="app-container">
+      )}
       <TweetDialog
         tweet={activeTweet}
         onClosed={() => {
