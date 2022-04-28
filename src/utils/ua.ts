@@ -1,27 +1,3 @@
-export const OPEN_ADD_DIALOG_EVENT = "open-add-dialog";
-export const REFRESH_NEWS_EVENT = "refresh-news";
-
-export const TOKEN_KEY = "__token__";
-export const SECRET_KEY = "__secret";
-export const categories = [
-  "aerial",
-  "explosion",
-  "shooting",
-  "bombing",
-  "liberation",
-  "kill",
-  "warning",
-  "civilian",
-  "vehicle",
-  "arrest",
-  "drone",
-  "mines",
-  "chemical",
-  "politics",
-  "governments",
-  "buildings",
-];
-
 export const cities = [
   {
     city: "Kyiv",

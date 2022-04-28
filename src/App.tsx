@@ -14,10 +14,12 @@ import NewsList from "./components/NewsList/NewsList";
 import TweetDialog from "./components/TweetDialog/TweetDialog";
 import { auth, logout, signInViaTwitter } from "./providers/FirebaseProvider";
 import { createTweetsProvider } from "./providers/TweetsProviderFactory";
+import { REFRESH_NEWS_EVENT } from "./utils/constants";
 
 function App() {
   const [user, loading, error] = useAuthState(auth);
   const [tweets, setTweets] = useState<Tweet[]>([]);
+  const [refresh, setRefresh] = useState<number | undefined>(undefined);
   const [activeTweet, setActiveTweet] = useState<Tweet | undefined>(undefined);
   const [tweetsLoading, setTweetsLoading] = useState<boolean>(false);
   const [dateFilter, setDateFilter] = useState<number>(() => {
@@ -25,8 +27,19 @@ function App() {
     today.setHours(12, 0, 0, 0);
     return today.getTime();
   });
+
   const { enqueueSnackbar } = useSnackbar();
   const provider = useMemo(createTweetsProvider, []);
+  useEffect(() => {
+    const refreshListener = () => {
+      setRefresh(Date.now());
+    };
+    window.addEventListener(REFRESH_NEWS_EVENT, refreshListener);
+    return () => {
+      window.removeEventListener(REFRESH_NEWS_EVENT, refreshListener);
+    };
+  }, []);
+
   useEffect(() => {
     let cancel = false;
     const fetchNews = async () => {
@@ -47,7 +60,7 @@ function App() {
     return () => {
       cancel = true;
     };
-  }, [dateFilter]);
+  }, [dateFilter, refresh]);
 
   return (
     <div className="app-container">

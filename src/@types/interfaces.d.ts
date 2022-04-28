@@ -9,6 +9,7 @@ export interface TweetsProvider {
     userId: string,
     vote: "real" | "fake" | "empty"
   ): Promise<void>;
+  addTweet(model: NewTweet): Promise<void>;
 }
 
 export interface Tweet {
@@ -50,5 +51,8 @@ export interface VoteInfo {
 export interface NewTweet {
   categories: Array<TweetCategory>;
   text: string;
+  city: string;
+  lat: number;
+  lng: number;
   //TODO rest props
 }

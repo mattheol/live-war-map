@@ -1,4 +1,10 @@
-import { Tweet, TweetsProvider, VoteInfo } from "../@types/interfaces";
+import {
+  NewTweet,
+  Tweet,
+  TweetsProvider,
+  VoteInfo,
+} from "../@types/interfaces";
+import { TOKEN_KEY, SECRET_KEY } from "../utils/constants";
 import { createFetchUrl } from "../utils/helpers";
 
 export class TweetsProviderImpl implements TweetsProvider {
@@ -8,6 +14,19 @@ export class TweetsProviderImpl implements TweetsProvider {
     this.url = url;
   }
 
+  async addTweet(model: NewTweet): Promise<void> {
+    const url = `${this.url}/add_tweet`;
+    const body = JSON.stringify({
+      ...model,
+      token: localStorage.getItem(TOKEN_KEY) || "",
+      secret: localStorage.getItem(SECRET_KEY) || "",
+    });
+    try {
+      await fetch(url, { method: "POST", body }).then((f) => f.json());
+    } catch {}
+    // return res;
+  }
+
   async getTweetVoteInfo(tweetId: string, userId?: string): Promise<VoteInfo> {
     const urlParams = new URLSearchParams({
       tweetId: tweetId,
@@ -15,7 +34,7 @@ export class TweetsProviderImpl implements TweetsProvider {
     if (userId) {
       urlParams.set("userId", userId);
     }
-    const url = `${this.url}/vote-info`;
+    const url = `${this.url}/vote_info`;
     const fetchUrl = createFetchUrl(url, urlParams);
     try {
       const res = await fetch(fetchUrl).then((f) => f.json());
