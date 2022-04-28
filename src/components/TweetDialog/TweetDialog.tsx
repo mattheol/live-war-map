@@ -15,6 +15,7 @@ import { auth } from "../../providers/FirebaseProvider";
 import { Button, ButtonGroup } from "@mui/material";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
+import { useSnackbar } from "notistack";
 
 export interface TweetDialogProps {
   tweet?: Tweet;
@@ -32,6 +33,7 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
   const [voteInfo, setVoteInfo] = useState<VoteInfo | undefined>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
   const provider = useMemo(createTweetsProvider, []);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     setVoteInfo(undefined);
@@ -110,10 +112,22 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
                     : "outlined"
                 }
                 onClick={async () => {
-                  if (user?.uid && voteInfo.userVote !== "real") {
+                  if (!user?.uid) {
+                    enqueueSnackbar("You have to be logged in order to vote", {
+                      variant: "info",
+                      autoHideDuration: 2500,
+                    });
+                    return;
+                  }
+                  if (voteInfo.userVote !== "real") {
                     setLoading(true);
                     await provider.voteForTweet(tweet.id, user.uid, "real");
                     setVoteInfo({ ...voteInfo, real: voteInfo.real + 1 });
+                    setLoading(false);
+                  } else {
+                    setLoading(true);
+                    await provider.voteForTweet(tweet.id, user.uid, "empty");
+                    setVoteInfo({ ...voteInfo, real: voteInfo.real - 1 });
                     setLoading(false);
                   }
                 }}
@@ -128,10 +142,22 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
                     : "outlined"
                 }
                 onClick={async () => {
-                  if (user?.uid && voteInfo.userVote !== "fake") {
+                  if (!user?.uid) {
+                    enqueueSnackbar("You have to be logged in order to vote", {
+                      variant: "info",
+                      autoHideDuration: 2500,
+                    });
+                    return;
+                  }
+                  if (voteInfo.userVote !== "fake") {
                     setLoading(true);
                     await provider.voteForTweet(tweet.id, user.uid, "fake");
                     setVoteInfo({ ...voteInfo, fake: voteInfo.fake + 1 });
+                    setLoading(false);
+                  } else {
+                    setLoading(true);
+                    await provider.voteForTweet(tweet.id, user.uid, "empty");
+                    setVoteInfo({ ...voteInfo, fake: voteInfo.fake - 1 });
                     setLoading(false);
                   }
                 }}
