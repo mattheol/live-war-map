@@ -46,3 +46,9 @@ export interface VoteInfo {
   fake: number;
   userVote?: string;
 }
+
+export interface NewTweet {
+  categories: Array<TweetCategory>;
+  text: string;
+  //TODO rest props
+}

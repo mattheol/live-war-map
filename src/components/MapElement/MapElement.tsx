@@ -1,11 +1,19 @@
 import L from "leaflet";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Tweet } from "../../@types/interfaces";
 import { mapProvider } from "../../providers/MapProvider";
 import { getIconForCategory, getTextForCategory } from "../../utils/helpers";
 import "./MapElement.css";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../providers/FirebaseProvider";
+import { OPEN_ADD_DIALOG_EVENT } from "../../utils/constants";
+import CreateTweetDialog from "../CreateTweetDialog/CreateTweetDialog";
 
 export interface MapElementProps {
   tweets: Array<Tweet>;
@@ -14,10 +22,18 @@ export interface MapElementProps {
 
 const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
   const [map, setMap] = useState<L.Map | undefined>(undefined);
+  const [refreshButton, setRefreshButton] = useState<number | undefined>(
+    undefined
+  );
   const [user, loading, error] = useAuthState(auth);
   const legendControlRef = useRef<L.Control | undefined>(undefined);
   const buttonAddRef = useRef<L.Control | undefined>(undefined);
   const divElement = useRef<any>(undefined);
+
+  const onClosed = useCallback(() => {
+    setRefreshButton(Date.now());
+  }, []);
+
   useEffect(() => {
     const newMap = L.map(divElement.current, {
       center: [49, 31],
@@ -117,8 +133,9 @@ const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
           const buttonElem = L.DomUtil.create("button", "legend-container");
           buttonElem.innerHTML = `Add a news`;
           buttonElem.addEventListener("click", () => {
-            //TODO handle
-            console.log("click add button");
+            window.dispatchEvent(new Event(OPEN_ADD_DIALOG_EVENT));
+            map.removeControl(buttonAddRef.current!);
+            buttonAddRef.current = undefined;
           });
           return buttonElem;
         };
@@ -126,9 +143,14 @@ const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
         buttonAddRef.current = buttonAdd;
       }
     }
-  }, [map, user]);
+  }, [map, user, refreshButton]);
 
-  return <div className="map-element-container" ref={divElement}></div>;
+  return (
+    <>
+      <div className="map-element-container" ref={divElement}></div>
+      <CreateTweetDialog onClosed={onClosed} />
+    </>
+  );
 };
 
 export default MapElement;

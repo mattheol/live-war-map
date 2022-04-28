@@ -8,6 +8,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Tweet } from "./@types/interfaces";
 import "./App.css";
+import CreateTweetDialog from "./components/CreateTweetDialog/CreateTweetDialog";
 import MapElement from "./components/MapElement/MapElement";
 import NewsList from "./components/NewsList/NewsList";
 import TweetDialog from "./components/TweetDialog/TweetDialog";
