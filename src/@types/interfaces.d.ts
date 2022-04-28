@@ -3,6 +3,12 @@ export interface TweetsProvider {
     start_date: number;
     end_date: number;
   }): Promise<Array<Tweet>>;
+  getTweetVoteInfo(tweetId: string, userId?: string): Promise<VoteInfo>;
+  voteForTweet(
+    tweetId: string,
+    userId: string,
+    vote: "real" | "fake" | "empty"
+  ): Promise<void>;
 }
 
 export interface Tweet {
@@ -34,3 +40,9 @@ export type TweetCategory =
   | "politics"
   | "governments"
   | "buildings";
+
+export interface VoteInfo {
+  real: number;
+  fake: number;
+  userVote?: string;
+}

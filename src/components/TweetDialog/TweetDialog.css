@@ -1,3 +1,10 @@
 .dialog-content {
   height: 700px;
 }
+
+.tweet-dialog-content-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}

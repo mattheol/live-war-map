@@ -95,3 +95,9 @@ export const getDateList = (): Array<{ value: number; alias: string }> => {
     alias: i === 0 ? "Today" : d.toLocaleDateString(),
   }));
 };
+
+export function createFetchUrl(url: string, urlParams: URLSearchParams) {
+  const fetchUrl = new URL(url);
+  fetchUrl.search = urlParams.toString();
+  return fetchUrl.toString();
+}
