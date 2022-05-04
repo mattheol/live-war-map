@@ -38,14 +38,12 @@ export class TweetsProviderImpl implements TweetsProvider {
     const url = `${this.url}/vote_info`;
     const fetchUrl = createFetchUrl(url, urlParams);
     try {
-      const res = await fetch(fetchUrl).then((f) => f.json());
-    } catch {}
-    // return res;
-    return {
-      real: 3,
-      fake: 2,
-      userVote: Math.random() > 0.5 ? "real" : "fake",
-    };
+      const res: VoteInfo = await fetch(fetchUrl).then((f) => f.json());
+      return res;
+    } catch (e) {
+      console.error({ e });
+      throw new Error((e as any).message);
+    }
   }
 
   async voteForTweet(
