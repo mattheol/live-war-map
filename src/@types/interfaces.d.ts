@@ -22,6 +22,8 @@ export interface Tweet {
   lat: number;
   lng: number;
   source?: "twitter" | "app"; //default twitter
+  published?: boolean; //default true
+  image?: string; //base64
 }
 
 export type TweetCategory =
@@ -54,5 +56,6 @@ export interface NewTweet {
   city: string;
   lat: number;
   lng: number;
+  image?: string;
   //TODO rest props
 }

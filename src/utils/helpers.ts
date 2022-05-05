@@ -101,3 +101,19 @@ export function createFetchUrl(url: string, urlParams: URLSearchParams) {
   fetchUrl.search = urlParams.toString();
   return fetchUrl.toString();
 }
+
+export function readDataUrl(file: Blob) {
+  return new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onloadend = () => {
+      resolve(reader.result as string);
+    };
+
+    reader.onerror = () => {
+      reject();
+    };
+
+    reader.readAsDataURL(file);
+  });
+}

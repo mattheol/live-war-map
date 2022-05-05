@@ -17,15 +17,15 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import SaveIcon from "@mui/icons-material/Save";
 import { cities } from "../../utils/constants";
-import { getIconForCategory } from "../../utils/helpers";
+import { getIconForCategory, readDataUrl } from "../../utils/helpers";
 import { createTweetsProvider } from "../../providers/TweetsProviderFactory";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../providers/FirebaseProvider";
-import { TextField, Autocomplete, Stack, Button } from "@mui/material";
+import { TextField, Autocomplete, Stack, Button, Paper } from "@mui/material";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useSnackbar } from "notistack";
-import AddIcon from "@mui/icons-material/Add";
+import UploadIcon from "@mui/icons-material/Upload";
 
 export interface CreateTweetDialogProps {
   onClosed: () => void;
@@ -37,6 +37,7 @@ const tweetSchema = Yup.object().shape({
     .test("len", "Min 3 characters", (val) => (val ?? "").length >= 3),
   categories: Yup.array(Yup.string()).min(1, "Select at least one category"),
   city: Yup.string().required("Required"),
+  image: Yup.string(),
 });
 
 const useStyles = makeStyles(() => ({
@@ -104,6 +105,7 @@ const CreateTweetDialog = ({ onClosed }: CreateTweetDialogProps) => {
               categories: [] as Array<TweetCategory>,
               city: "",
               coords: undefined,
+              image: undefined,
             } as Partial<NewTweet>
           }
           validationSchema={tweetSchema}
@@ -125,6 +127,60 @@ const CreateTweetDialog = ({ onClosed }: CreateTweetDialogProps) => {
           }) => {
             return (
               <Stack spacing={3} style={{ marginTop: 15 }}>
+                <Paper className="form_img_container">
+                  {values.image && (
+                    <img
+                      src={values.image}
+                      style={{
+                        objectFit: "contain",
+                        height: "70%",
+                        width: "70%",
+                      }}
+                    />
+                  )}
+                  <label htmlFor="upload-photo">
+                    <input
+                      style={{ display: "none" }}
+                      id="upload-photo"
+                      name="upload-photo"
+                      type="file"
+                      accept=".jpg,.png,.jpeg"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          readDataUrl(file).then((dataUrl) => {
+                            setFieldValue("image", dataUrl);
+                          });
+                        }
+                      }}
+                    />
+                    <Button
+                      variant="contained"
+                      component="span"
+                      color={
+                        !!(touched.image && errors.image) ? "error" : "primary"
+                      }
+                      style={{ marginTop: "10px" }}
+                      endIcon={<UploadIcon />}
+                    >
+                      {!values.image ? "Upload photo" : "Change photo"}
+                    </Button>
+                  </label>
+                  {values.image && (
+                    <Button
+                      variant="contained"
+                      component="span"
+                      color={"error"}
+                      onClick={() => {
+                        setFieldValue("image", undefined);
+                      }}
+                      style={{ marginTop: "10px" }}
+                      endIcon={<CloseIcon />}
+                    >
+                      Delete photo
+                    </Button>
+                  )}
+                </Paper>
                 <TextField
                   label="Text"
                   variant="outlined"
