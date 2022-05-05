@@ -12,7 +12,7 @@ import { getIconForCategory } from "../../utils/helpers";
 import { createTweetsProvider } from "../../providers/TweetsProviderFactory";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../providers/FirebaseProvider";
-import { Button, ButtonGroup } from "@mui/material";
+import { Button, ButtonGroup, Paper } from "@mui/material";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useSnackbar } from "notistack";
@@ -58,6 +58,30 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
   const onClose = () => {
     setOpen(false);
     onClosed();
+  };
+
+  const renderTweet = () => {
+    if (!tweet) return null;
+    if (tweet.published == false) {
+      return (
+        <Paper sx={{ padding: "20px 30px" }}>
+          {tweet.image && (
+            <div className="unpublished_tweet_img_container">
+              <img
+                src={tweet.image}
+                style={{
+                  objectFit: "contain",
+                  height: "90%",
+                  width: "90%",
+                }}
+              />
+            </div>
+          )}
+          <div style={{ fontSize: 18 }}>{tweet.text}</div>
+        </Paper>
+      );
+    }
+    return <TwitterTweetEmbed tweetId={tweet.id} />;
   };
 
   return (
@@ -122,12 +146,20 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
                   if (voteInfo.userVote !== "real") {
                     setLoading(true);
                     await provider.voteForTweet(tweet.id, user.uid, "real");
-                    setVoteInfo({ ...voteInfo, real: voteInfo.real + 1 });
+                    setVoteInfo({
+                      ...voteInfo,
+                      real: voteInfo.real + 1,
+                      userVote: "real",
+                    });
                     setLoading(false);
                   } else {
                     setLoading(true);
                     await provider.voteForTweet(tweet.id, user.uid, "empty");
-                    setVoteInfo({ ...voteInfo, real: voteInfo.real - 1 });
+                    setVoteInfo({
+                      ...voteInfo,
+                      real: voteInfo.real - 1,
+                      userVote: "empty",
+                    });
                     setLoading(false);
                   }
                 }}
@@ -152,12 +184,20 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
                   if (voteInfo.userVote !== "fake") {
                     setLoading(true);
                     await provider.voteForTweet(tweet.id, user.uid, "fake");
-                    setVoteInfo({ ...voteInfo, fake: voteInfo.fake + 1 });
+                    setVoteInfo({
+                      ...voteInfo,
+                      fake: voteInfo.fake + 1,
+                      userVote: "fake",
+                    });
                     setLoading(false);
                   } else {
                     setLoading(true);
                     await provider.voteForTweet(tweet.id, user.uid, "empty");
-                    setVoteInfo({ ...voteInfo, fake: voteInfo.fake - 1 });
+                    setVoteInfo({
+                      ...voteInfo,
+                      fake: voteInfo.fake - 1,
+                      userVote: "empty",
+                    });
                     setLoading(false);
                   }
                 }}
@@ -167,7 +207,7 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
             </ButtonGroup>
           </div>
         )}
-        {tweet?.id && <TwitterTweetEmbed tweetId={tweet.id} />}
+        {renderTweet()}
       </DialogContent>
     </Dialog>
   );

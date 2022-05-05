@@ -8,3 +8,11 @@
   justify-content: space-between;
   align-items: center;
 }
+
+.unpublished_tweet_img_container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 350px;
+}
