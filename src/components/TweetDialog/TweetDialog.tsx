@@ -63,7 +63,7 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
   const renderTweet = () => {
     if (!tweet) return null;
     const published = tweet.published ?? true;
-    if (!tweet.published) {
+    if (!published) {
       return (
         <Paper sx={{ padding: "20px 30px" }}>
           {tweet.image && (
