@@ -147,11 +147,20 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
                   if (voteInfo.userVote !== "real") {
                     setLoading(true);
                     await provider.voteForTweet(tweet.id, user.uid, "real");
-                    setVoteInfo({
-                      ...voteInfo,
-                      real: voteInfo.real + 1,
-                      userVote: "real",
-                    });
+                    if (voteInfo.userVote === "fake") {
+                      setVoteInfo({
+                        ...voteInfo,
+                        fake: voteInfo.fake - 1,
+                        real: voteInfo.real + 1,
+                        userVote: "real",
+                      });
+                    } else {
+                      setVoteInfo({
+                        ...voteInfo,
+                        real: voteInfo.real + 1,
+                        userVote: "real",
+                      });
+                    }
                     setLoading(false);
                   } else {
                     setLoading(true);
@@ -185,11 +194,20 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
                   if (voteInfo.userVote !== "fake") {
                     setLoading(true);
                     await provider.voteForTweet(tweet.id, user.uid, "fake");
-                    setVoteInfo({
-                      ...voteInfo,
-                      fake: voteInfo.fake + 1,
-                      userVote: "fake",
-                    });
+                    if (voteInfo.userVote === "real") {
+                      setVoteInfo({
+                        ...voteInfo,
+                        fake: voteInfo.fake + 1,
+                        real: voteInfo.real - 1,
+                        userVote: "fake",
+                      });
+                    } else {
+                      setVoteInfo({
+                        ...voteInfo,
+                        fake: voteInfo.fake + 1,
+                        userVote: "fake",
+                      });
+                    }
                     setLoading(false);
                   } else {
                     setLoading(true);
