@@ -72,8 +72,8 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
                 src={tweet.image}
                 style={{
                   objectFit: "contain",
-                  height: "90%",
-                  width: "90%",
+                  height: "100%",
+                  width: "100%",
                 }}
               />
             </div>
