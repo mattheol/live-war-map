@@ -12,14 +12,20 @@ import { getIconForCategory, getTextForCategory } from "../../utils/helpers";
 import "./MapElement.css";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../providers/FirebaseProvider";
-import { OPEN_ADD_DIALOG_EVENT } from "../../utils/constants";
+import {
+  DRAW_EVENT,
+  END_DRAW_EVENT,
+  OPEN_ADD_DIALOG_EVENT,
+} from "../../utils/constants";
 import CreateTweetDialog from "../CreateTweetDialog/CreateTweetDialog";
-
 export interface MapElementProps {
   tweets: Array<Tweet>;
   onTweetClick: (tweet: Tweet) => void;
 }
 
+//require leaflet-draw plugin
+const leafletDraw = require("leaflet-draw");
+const iconUrl = require("leaflet/dist/images/marker-icon.png");
 const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
   const [map, setMap] = useState<L.Map | undefined>(undefined);
   const [refreshButton, setRefreshButton] = useState<number | undefined>(
@@ -49,6 +55,25 @@ const MapElement = ({ tweets, onTweetClick }: MapElementProps) => {
       }
     );
     tiles.addTo(newMap);
+    const drawer = new L.Draw.Marker(newMap);
+    const customIcon = L.icon({
+      iconUrl: getIconForCategory("warning"),
+      iconSize: [38, 95],
+    });
+    drawer.initialize(newMap, { icon: customIcon });
+    newMap.on("draw:created", (e) => {
+      window.dispatchEvent(
+        new CustomEvent(END_DRAW_EVENT, { detail: e.layer._latlng })
+      );
+    });
+    const listener = () => {
+      drawer.enable();
+    };
+    window.addEventListener(DRAW_EVENT, listener);
+    return () => {
+      window.removeEventListener(DRAW_EVENT, listener);
+      drawer.disable();
+    };
   }, []);
 
   useEffect(() => {

@@ -10,8 +10,10 @@ import CloseIcon from "@mui/icons-material/Close";
 import { makeStyles } from "@mui/styles";
 import {
   categories,
+  DRAW_EVENT,
   OPEN_ADD_DIALOG_EVENT,
   REFRESH_NEWS_EVENT,
+  END_DRAW_EVENT,
 } from "../../utils/constants";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -44,7 +46,7 @@ const tweetSchema = Yup.object().shape({
     .required("Required")
     .test("len", "Min 3 characters", (val) => (val ?? "").length >= 3),
   categories: Yup.array(Yup.string()).min(1, "Select at least one category"),
-  city: Yup.string().required("Required"),
+  city: Yup.string(),
   image: Yup.string(),
 });
 
@@ -55,6 +57,15 @@ const useStyles = makeStyles(() => ({
 const CreateTweetDialog = ({ onClosed }: CreateTweetDialogProps) => {
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
+  const [model, setModel] = useState<Partial<NewTweet>>({
+    text: "",
+    categories: [] as Array<TweetCategory>,
+    city: "",
+    image: undefined,
+  });
+  const [geo, setGeo] = useState<{ lat: number; lng: number } | undefined>(
+    undefined
+  );
   const [user, usrloading, error] = useAuthState(auth);
   const [loading, setLoading] = useState<boolean>(false);
   const [shouldPublish, setShouldPublish] = useState<boolean>(true);
@@ -66,17 +77,31 @@ const CreateTweetDialog = ({ onClosed }: CreateTweetDialogProps) => {
       setOpen(true);
     };
     window.addEventListener(OPEN_ADD_DIALOG_EVENT, listener);
+    const drawEndListener = (e: CustomEvent<{ lat: number; lng: number }>) => {
+      const { lat, lng } = e.detail;
+      setOpen(true);
+      setGeo({ lat, lng });
+    };
+    window.addEventListener(END_DRAW_EVENT as any, drawEndListener);
+
     return () => {
       window.removeEventListener(OPEN_ADD_DIALOG_EVENT, listener);
+      window.removeEventListener(END_DRAW_EVENT, listener);
     };
   }, []);
 
   const onClose = useCallback(() => {
+    setModel({
+      text: "",
+      categories: [] as Array<TweetCategory>,
+      city: "",
+      image: undefined,
+    });
+    setGeo(undefined);
     setOpen(false);
     setShouldPublish(true);
     onClosed();
   }, [onClosed]);
-
   return (
     <Dialog open={open} onClose={onClose} classes={{ paper: classes.paper }}>
       <DialogTitle sx={{ m: 0, p: 2 }}>
@@ -106,19 +131,21 @@ const CreateTweetDialog = ({ onClosed }: CreateTweetDialogProps) => {
         )}
         <Formik
           enableReinitialize={true}
-          initialValues={
-            {
-              text: "",
-              categories: [] as Array<TweetCategory>,
-              city: "",
-              coords: undefined,
-              image: undefined,
-            } as Partial<NewTweet>
-          }
+          initialValues={model}
           validationSchema={tweetSchema}
           onSubmit={async (values) => {
+            if (!geo) {
+              enqueueSnackbar("You have to select geolocation", {
+                variant: "error",
+                autoHideDuration: 2000,
+              });
+              return;
+            }
             setLoading(true);
-            await provider.addTweet(values as NewTweet, shouldPublish);
+            await provider.addTweet(
+              { ...values, ...geo } as NewTweet,
+              shouldPublish
+            );
             setLoading(false);
             onClose();
             window.dispatchEvent(new Event(REFRESH_NEWS_EVENT));
@@ -223,13 +250,31 @@ const CreateTweetDialog = ({ onClosed }: CreateTweetDialogProps) => {
                   getOptionLabel={(option) => option.city}
                   onChange={(e, value) => {
                     setFieldValue("city", value?.city);
-                    setFieldValue("lat", value ? +value.lat : undefined);
-                    setFieldValue("lng", value ? +value.lng : undefined);
+                    setGeo(
+                      value ? { lat: +value.lat, lng: +value.lng } : undefined
+                    );
                   }}
                   renderInput={(params) => (
                     <TextField {...params} label="City" />
                   )}
                 />
+                <div>
+                  <TextField disabled label="Lat" value={geo?.lat || ""} />
+                  <TextField disabled label="Lng" value={geo?.lng || ""} />
+                  <Button
+                    size="large"
+                    variant="contained"
+                    color="warning"
+                    onClick={async () => {
+                      window.dispatchEvent(new CustomEvent(DRAW_EVENT));
+                      setModel({ ...values, city: undefined });
+                      setOpen(false);
+                    }}
+                  >
+                    Select geolocation on map
+                  </Button>
+                </div>
+
                 <FormControlLabel
                   control={
                     <Checkbox
@@ -241,7 +286,6 @@ const CreateTweetDialog = ({ onClosed }: CreateTweetDialogProps) => {
                   }
                   label="Publish on Twitter"
                 />
-
                 <Button
                   size="large"
                   variant="contained"

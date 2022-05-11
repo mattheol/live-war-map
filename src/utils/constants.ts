@@ -1,5 +1,7 @@
 export const OPEN_ADD_DIALOG_EVENT = "open-add-dialog";
 export const REFRESH_NEWS_EVENT = "refresh-news";
+export const DRAW_EVENT = "draw";
+export const END_DRAW_EVENT = "end-draw";
 
 export const TOKEN_KEY = "__token__";
 export const SECRET_KEY = "__secret";
