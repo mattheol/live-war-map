@@ -21,7 +21,15 @@ import { getIconForCategory, readDataUrl } from "../../utils/helpers";
 import { createTweetsProvider } from "../../providers/TweetsProviderFactory";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { auth } from "../../providers/FirebaseProvider";
-import { TextField, Autocomplete, Stack, Button, Paper } from "@mui/material";
+import {
+  TextField,
+  Autocomplete,
+  Stack,
+  Button,
+  Paper,
+  Checkbox,
+  FormControlLabel,
+} from "@mui/material";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import { useSnackbar } from "notistack";
@@ -48,14 +56,13 @@ const CreateTweetDialog = ({ onClosed }: CreateTweetDialogProps) => {
   const classes = useStyles();
   const [open, setOpen] = useState<boolean>(false);
   const [user, usrloading, error] = useAuthState(auth);
-  const [model, setModel] = useState<Partial<NewTweet>>({});
   const [loading, setLoading] = useState<boolean>(false);
+  const [shouldPublish, setShouldPublish] = useState<boolean>(true);
   const provider = useMemo(createTweetsProvider, []);
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
     const listener = () => {
-      setModel({});
       setOpen(true);
     };
     window.addEventListener(OPEN_ADD_DIALOG_EVENT, listener);
@@ -66,7 +73,7 @@ const CreateTweetDialog = ({ onClosed }: CreateTweetDialogProps) => {
 
   const onClose = useCallback(() => {
     setOpen(false);
-    setModel({});
+    setShouldPublish(true);
     onClosed();
   }, [onClosed]);
 
@@ -111,7 +118,7 @@ const CreateTweetDialog = ({ onClosed }: CreateTweetDialogProps) => {
           validationSchema={tweetSchema}
           onSubmit={async (values) => {
             setLoading(true);
-            await provider.addTweet(values as NewTweet);
+            await provider.addTweet(values as NewTweet, shouldPublish);
             setLoading(false);
             onClose();
             window.dispatchEvent(new Event(REFRESH_NEWS_EVENT));
@@ -216,13 +223,25 @@ const CreateTweetDialog = ({ onClosed }: CreateTweetDialogProps) => {
                   getOptionLabel={(option) => option.city}
                   onChange={(e, value) => {
                     setFieldValue("city", value?.city);
-                    setFieldValue("lat", value?.lat);
-                    setFieldValue("lng", value?.lng);
+                    setFieldValue("lat", +value?.lat);
+                    setFieldValue("lng", +value?.lng);
                   }}
                   renderInput={(params) => (
                     <TextField {...params} label="City" />
                   )}
                 />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={shouldPublish}
+                      onChange={(e, checked) => {
+                        setShouldPublish(checked);
+                      }}
+                    />
+                  }
+                  label="Publish on Twitter"
+                />
+
                 <Button
                   size="large"
                   variant="contained"

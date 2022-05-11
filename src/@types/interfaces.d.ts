@@ -9,7 +9,7 @@ export interface TweetsProvider {
     userId: string,
     vote: "real" | "fake" | "empty"
   ): Promise<void>;
-  addTweet(model: NewTweet): Promise<void>;
+  addTweet(model: NewTweet, shouldPublish: boolean): Promise<void>;
 }
 
 export interface Tweet {

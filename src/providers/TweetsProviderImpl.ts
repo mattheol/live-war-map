@@ -14,11 +14,15 @@ export class TweetsProviderImpl implements TweetsProvider {
     this.url = url;
   }
 
-  async addTweet(model: NewTweet): Promise<void> {
-    const urlParams = new URLSearchParams({
-      token: localStorage.getItem(TOKEN_KEY) || "",
-      secret: localStorage.getItem(SECRET_KEY) || "",
-    });
+  async addTweet(model: NewTweet, shouldPublish: boolean): Promise<void> {
+    const urlParams = new URLSearchParams(
+      shouldPublish
+        ? {
+            token: localStorage.getItem(TOKEN_KEY) || "",
+            secret: localStorage.getItem(SECRET_KEY) || "",
+          }
+        : undefined
+    );
     const url = `${this.url}/add_tweet`;
     const fetchUrl = createFetchUrl(url, urlParams);
     const body = JSON.stringify(model);
