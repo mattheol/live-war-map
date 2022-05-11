@@ -223,8 +223,8 @@ const CreateTweetDialog = ({ onClosed }: CreateTweetDialogProps) => {
                   getOptionLabel={(option) => option.city}
                   onChange={(e, value) => {
                     setFieldValue("city", value?.city);
-                    setFieldValue("lat", +value?.lat);
-                    setFieldValue("lng", +value?.lng);
+                    setFieldValue("lat", value ? +value.lat : undefined);
+                    setFieldValue("lng", value ? +value.lng : undefined);
                   }}
                   renderInput={(params) => (
                     <TextField {...params} label="City" />
