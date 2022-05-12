@@ -61,9 +61,8 @@ export class TweetsProviderImpl implements TweetsProvider {
       vote,
     });
     const url = `${this.url}/vote`;
-    const fetchUrl = createFetchUrl(url, urlParams);
     try {
-      await fetch(fetchUrl, { method: "POST" });
+      await fetch(url, { method: "POST", body: urlParams });
     } catch (e) {
       console.error({ e });
     }
