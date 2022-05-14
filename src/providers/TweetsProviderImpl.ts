@@ -55,14 +55,15 @@ export class TweetsProviderImpl implements TweetsProvider {
     userId: string,
     vote: "real" | "fake" | "empty"
   ): Promise<void> {
-    const urlParams = new URLSearchParams({
+    const data = {
       tweetId: tweetId,
       userId: userId,
       vote,
-    });
+    }
+    const body = JSON.stringify(data);
     const url = `${this.url}/vote`;
     try {
-      await fetch(url, { method: "POST", body: urlParams });
+      await fetch(url, { method: "POST", body });
     } catch (e) {
       console.error({ e });
     }
