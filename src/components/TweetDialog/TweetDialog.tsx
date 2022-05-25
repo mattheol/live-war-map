@@ -82,7 +82,7 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
         </Paper>
       );
     }
-    return <TwitterTweetEmbed tweetId={tweet.id} />;
+    return <TwitterTweetEmbed tweetId={tweet.tweetId ?? tweet.id} />;
   };
 
   return (

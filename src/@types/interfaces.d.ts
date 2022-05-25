@@ -14,14 +14,14 @@ export interface TweetsProvider {
 
 export interface Tweet {
   id: string;
-  city: string;
+  city?: string;
   date: string;
   text: string;
   categories: Array<TweetCategory>;
   mainCategory: TweetCategory;
   lat: number;
   lng: number;
-  source?: "twitter" | "app"; //default twitter
+  tweetId?: string; //only for tweets published by user
   published?: boolean; //default true
   image?: string; //base64
 }
