@@ -82,7 +82,23 @@ const TweetDialog = ({ tweet, onClosed }: TweetDialogProps) => {
         </Paper>
       );
     }
-    return <TwitterTweetEmbed tweetId={tweet.tweetId ?? tweet.id} />;
+    return (
+      <>
+        <TwitterTweetEmbed tweetId={tweet.tweetId ?? tweet.id} />
+        {tweet.image && (
+          <div className="unpublished_tweet_img_container">
+            <img
+              src={tweet.image}
+              style={{
+                objectFit: "contain",
+                height: "100%",
+                width: "100%",
+              }}
+            />
+          </div>
+        )}
+      </>
+    );
   };
 
   return (
